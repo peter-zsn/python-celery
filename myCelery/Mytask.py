@@ -5,7 +5,7 @@ class MyTask(Task):
     def get_task_name(self, name, module):
         if module.endswith('.tasks'):
             module = module[:6]
-        return super(MyTask, self).gen_task_name(name, module)
+        return module + name
 
     # 任务返回后， 处理程序调用。会自动调用
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
@@ -27,7 +27,7 @@ class MyTask(Task):
         :param task_id:失败任务的唯一ID
         :return:
         """
-        print('after_return', exc, task_id)
+        print('on_failure', exc, task_id)
         return super(MyTask, self).on_failure(exc, task_id, args, kwargs, einfo)
 
     # 这是在重试任务时由工作人员运行的
@@ -51,5 +51,5 @@ class MyTask(Task):
         :param kwargs:
         :return:
         """
-        print('after_return', retval, task_id, args, kwargs)
+        print('on_success', retval, task_id, args, kwargs)
         return super(MyTask, self).on_success(retval, task_id, args, kwargs)
