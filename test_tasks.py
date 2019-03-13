@@ -11,9 +11,9 @@ while not relA.ready():
     time.sleep(1)
     # print(relA.get(timeout=10))
 print(relA.state)           # 查看任务的状态，若是不配置结果后端，一直为pending。
-# print(relA.id)              # 查看任务的id
+print(relA.id)              # 查看任务的id
 #
-# relb = taskB.delay(1, 2, 3)
-# while not relb.ready():
-#     time.sleep(1)
-# print("b %s" % relb.result)     # 查看任务的结果，若是不保存结果后端，此项为None
+relb = taskB.delay(1, 2, 3)
+while not relb.ready():
+    time.sleep(1)
+print("b %s" % relb.result)     # 查看任务的结果，若是不保存结果后端，此项为None

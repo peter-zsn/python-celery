@@ -28,6 +28,19 @@ result_serializer = 'json'
 # 只有当worker完成了这个task时，任务才被标记为ack状态. 注意：这意味着如果工作程序在执行过程中崩溃，任务可能会多次执行
 task_acks_late = True
 
+# --------- task_acks_late，task_reject_on_worker_lost 同为true 保证消费者意外退出，任务不被消费，消费者重启后，继续执行 ---------
+# 当worker进程意外退出时，task会被放回到队列中(警告：启用此功能可能会导致错误消息循环执行)，默认是False
+task_reject_on_worker_lost = True
+
+# 单个任务的运行时间不超过此值，否则会被SIGKILL 信号杀死
+# task_time_limit = 60
+
+# celery与borker的连接池连接数
+broker_pool_limit = 10
+
+# 每个worker执行了多少任务就会死掉，防止长时间运行内存泄漏， 建议每个worker最多执行一个任务就销毁
+worker_max_tasks_per_child = 200
+
 # (安装使用中，发现用topic， 部分版本的python，re的源码与celery的命名冲突，需要根据产生的错误信息进行修改)
 default_exchange = Exchange("default", type="direct")           # direct完全匹配，直接转发对等的routing_key
 taskA_exchange = Exchange("taskA", type="topic")                # topic 正则匹配。发送给匹配成功的routing_key
@@ -40,8 +53,11 @@ task_default_exchange = "direct"
 task_default_routing_key = ""
 
 # 绑定交换机和队列
+# delivery_mode参数(决定tasks发送到RabbitMQ后，是否存储到磁盘中)（celery默认使用２：持久化方式）：
+# １表示rabbitmq不存储celery发送的tasks到磁盘,RabbitMQ重启后，任务丢失（建议使用这种方式）
+# ２表示rabbitmq可以存储celery发送的tasks到磁盘，RabbitMQ重启后，任务不会丢失（磁盘IO资源消耗极大，影响性能）
 task_queues = (
-    Queue("default", default_exchange, routing_key=""),
+    Queue("default", default_exchange, routing_key="", delivery_mode=1),
     Queue("task_A", taskA_exchange, routing_key="task.#"),          # 路由键以task.开头的进入task_A队列
     Queue("task_B", taskB_exchange, routing_key="btask"),          # 路由是btask的进入task_B队列
 )
