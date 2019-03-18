@@ -5,8 +5,8 @@ from celery.schedules import crontab
 from datetime import timedelta
 
 # broker中间人地址， 可用redis或rabbitmq, 下面用rabbitmq中间人和结果存放设置
-broker_url = "amqp://{}:{}@{}:{}".format("guest", "guest", "192.168.7.142", "5672")
-result_backend = "amqp://{}:{}@{}:{}".format("guest", "guest", "192.168.7.142", "5672")
+broker_url = "amqp://{}:{}@{}:{}".format("guest", "guest", "192.168.7.250", "5672")
+result_backend = "amqp://{}:{}@{}:{}".format("guest", "guest", "192.168.7.250", "5672")
 
 # # redis 连接方式， 中间人和结果存放设置
 # broker_url = "redis://root:jxtbkt2013!@192.168.7.250:6379/1"

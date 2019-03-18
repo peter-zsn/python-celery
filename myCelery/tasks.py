@@ -8,9 +8,9 @@ import datetime
 # default_retry_delay 默认重试时间
 # bind 绑定任务为实例方法，必须传递self， 为当前task
 @app.task(base=MyTask, name="task.taskA", bind=True)
-def taskA(self, x, y):
+def taskA(self, x, y, z, a):
     print(self.get_task_name("taskA", "aaa"))
-    return x + y
+    return x + y + z + a
 
 # work taskB,
 @app.task(name='task.taskB')

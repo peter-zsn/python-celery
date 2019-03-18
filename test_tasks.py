@@ -4,7 +4,7 @@ import time
 
 # countdown 等待时间默认S， 执行任务。  （先接受任务，再等待，时间到了执行任务）
 # 启动重试， 最大重试3次
-relA = taskA.apply_async(args=(1, 2), countdown=0, retry=True, retry_policy={
+relA = taskA.apply_async(args=(1, 2, 4, 3), countdown=0, retry=True, retry_policy={
     'max_retries': '3'
 })
 while not relA.ready():

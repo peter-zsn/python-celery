@@ -1,0 +1,37 @@
+(一) 安装使用rabbitmq
+    1: 下载rabbitmq 镜像
+        由于从官方拉取镜像经常超时， 因此使用国内的镜像源进行代理
+            docker pull registry.docker-cn.com/library/rabbitmq:3.7.7-management
+        镜像名字进行更改
+            docker tag image_id rabbitmq:3.7
+    2: 创建rabbitmq 容器
+         5672 为rabbitmq 对外提供的端口
+         15672 为rabbitmq web管理页面对外提供的接口
+         默认的用户名和密码都是guest
+         docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3.7
+    3：web 管理页面
+        127.0.0.1:15672
+        可以查看该rabbitmq的exchange， queue，task等
+
+(二) 启动celery
+    1: 按照如该项目结构创建celery项目结构和配置文件，以及工作任务
+    2：启动celery
+        celery multi start name -A myCelery -l info -B -c 1 -n zsn@%%h
+        multi 设置为后台
+        start 启动
+        name 为你后台的名字
+        -A myCelery  celery 内部task的工作环境。 即APP实例
+        -l 日志输出级别
+        -B 启动定时任务
+        -n 即name， 此worker的名字
+        -c 子进程数量, 默认为cpu核数
+        -p 执行类型，可以为eventlet, gevent， 默认为prefork
+        -q 指定队列, 此处在配置文件中指定了
+    3: 重启celery
+        celery multi restart name -A myCelery -l info -B -c 1 -n zsn@%%h
+    4: 停止celery
+        celery multi stop name -A myCelery -l info -B -c 1 -n zsn@%%h
+        celery multi kill name -A myCelery -l info -B -c 1 -n zsn@%%h
+        在生产环境重启，建议杀死信号，进行重建。
+        删除进程
+        ps auxww | grep 'celery worker' | awk '{print $2}' | xargs kill -9
